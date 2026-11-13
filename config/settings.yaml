@@ -1,0 +1,41 @@
+# AI Studio phase 1 settings
+
+llm:
+  # "ollama" = free, runs locally (fits a 4 GB laptop GPU with a small model)
+  # "anthropic" = paid API, much better scripts
+  # Tip: use anthropic only for the "smart" tier and ollama for "fast" by setting both tiers below.
+  provider_fast: ollama
+  provider_smart: ollama
+  ollama:
+    host: http://localhost:11434
+    fast_model: qwen2.5:3b
+    smart_model: qwen2.5:7b      # runs slowly on 4 GB VRAM; swap to qwen2.5:3b if too slow
+  anthropic:
+    fast_model: claude-haiku-5-5
+    smart_model: claude-sonnet-5-5
+  max_tokens: 4096
+  timeout_seconds: 600
+
+budget:
+  max_llm_tokens_per_run: 400000   # hard stop for runaway loops
+
+film:
+  target_minutes: 12
+  words_per_minute: 150            # narration plus dialogue pace
+  min_minutes: 10
+  max_minutes: 15
+  acts: 4
+  scenes_per_act: 4
+
+quality:
+  script_pass_score: 8.0           # critic average needed to pass
+  script_min_single_score: 6.0     # no single criterion below this
+  max_script_rounds: 3
+  max_concept_regenerations: 2
+
+discovery:
+  subreddits: [todayilearned, WritingPrompts, Futurology, space, history, mildlyinteresting]
+  hn_stories: 20
+  reddit_per_sub: 6
+  recent_genres_to_avoid: 5
+  genre_tags: [mystery, science, history, comedy, fantasy, true-story, what-if, sci-fi, thriller, mythology]
