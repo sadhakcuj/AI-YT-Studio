@@ -1,6 +1,6 @@
 # AI-YT-Studio
 
-An automated team of AI agents for making YouTube films. Full plan: [docs/PLAN.md](docs/PLAN.md). Licence: MIT.
+An automated team of AI agents for making YouTube films. Full plan: [docs/PLAN.md](docs/PLAN.md). New to all this? Start with the [beginner guide](docs/BEGINNER_GUIDE.md). Licence: MIT.
 
 Automated team of AI agents that turns an idea (found from live trends, or given by you) into a finished,
 quality-checked film script for a 10-15 minute narrated YouTube film with character dialogue.
