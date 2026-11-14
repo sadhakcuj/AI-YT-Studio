@@ -62,11 +62,24 @@ python -m pytest
 
 Tests use a scripted fake LLM: no network, no GPU, no cost.
 
+## Safety and quality checks
+
+Found after the first real run, which produced an invented, false story about real religious figures. Now:
+
+- The Researcher plans its searches, filters irrelevant pages, and a Fact Checker strips dossier lines the sources do not state.
+- Real-world rules go to every creative agent: no invented words, beliefs or crimes for real people, no anachronisms, no links between real subjects that the sources do not make. Use fictional characters inside real settings.
+- The critic reports accuracy issues. Any one blocks the quality gate.
+- Code-level checks block the gate on unknown speakers, long character monologues, narration scenes that contain character lines, and dialogue share outside 20-80%.
+- A rewrite that scores worse is thrown away. The best draft is always kept.
+- `report.md` starts with a "Read before use" list of warnings. A film about real people or beliefs is always flagged for a human fact check.
+
 ## Known limits
 
-- The Ollama and Anthropic adapters, and the live data sources, have not been exercised against the real services in the build environment. Tests cover the logic with a fake model. Expect to tune prompts after your first real runs.
+- The Ollama adapter and the free data sources have been run once on a real laptop. The Anthropic adapter has not been run for real. Expect to tune prompts.
 - Small local models sometimes return broken JSON. The router retries twice, then fails the stage; use `resume`.
-- The originality check is weak without `YOUTUBE_API_KEY`.
+- The originality check only works with `YOUTUBE_API_KEY`. Without it, the report says so.
+- Small local models write weak, repetitive scripts. A script that fails the gate after 3 rounds is expected on a 7b model; use a stronger model for the story, script and critic stages.
+- Ollama's default context window is small. `config/settings.yaml` sets `num_ctx: 8192` so the critic sees the whole script. Lower it to 4096 if you get memory errors.
 
 ## Roadmap
 

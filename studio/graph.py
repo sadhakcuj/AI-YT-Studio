@@ -1,6 +1,8 @@
 """Orchestrator. Plain Python state machine: easy to read, resume and later move to LangGraph or Temporal."""
 from __future__ import annotations
 
+import copy
+
 from .agents import critic, ideation, researcher, scriptwriter, story_architect, trend_scout
 from .export import export
 from .llm import BudgetExceeded, LLMRouter
@@ -31,12 +33,19 @@ def script_loop(state: RunState, llm: LLMRouter, cfg: dict) -> RunState:
     while True:
         state = scriptwriter.run(state, llm, cfg)
         state = critic.run(state, llm, cfg)
+        if not state.script_passed and not state.current_is_best:
+            # A rewrite made things worse. Go back to the best draft and rewrite from there.
+            state.note(f"Round {state.script_rounds} scored worse than the best draft; reverting to the best draft")
+            state.scenes = copy.deepcopy(state.best_scenes)
+            state.critic_notes = copy.deepcopy(state.best_notes)
+            state.script_scores = dict(state.best_scores)
+            state.script_score = state.best_scores.get("average", 0.0)
         state.tokens_used = llm.used
         state.save()
         if state.script_passed:
             break
         if state.script_rounds >= max_rounds:
-            state.note(f"Script did not reach pass score after {max_rounds} rounds; keeping best draft, flagged for human review")
+            state.warn(f"Script did not pass the quality gate after {max_rounds} rounds. The best draft is kept; read the open critic notes.")
             break
     return state
 

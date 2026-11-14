@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from ..llm import LLMRouter
+from ..rules import REAL_WORLD_RULES
 from ..state import RunState
 
 SYSTEM = """You are the Story Architect on an AI film studio team, a veteran story editor for online video.
@@ -9,8 +10,14 @@ Build a beat sheet for the chosen concept. Rules:
 - The first 30 seconds must be a gripping hook, not setup.
 - A new reveal, turn or escalation at least every 60-90 seconds (retention peaks).
 - Exactly {acts} acts, {scenes} scenes per act. Each scene has one clear purpose and one change.
+- scene_id is act.scene, for example 1.1, 1.2, 2.1.
+- Every scene must move the plot. No scene may repeat the previous scene's beat.
+- At least half the scenes have form "dialogue" or "mixed". Use form "narration" for at most 4 scenes.
+- In "characters" use only names from the concept's cast.
 - The ending must be earned and land an emotion or idea people want to share.
-- Target runtime {minutes} minutes in total."""
+- Target runtime {minutes} minutes in total.
+
+""" + REAL_WORLD_RULES
 
 USER = """CONCEPT:
 {concept}

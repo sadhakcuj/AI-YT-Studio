@@ -21,8 +21,8 @@ class Backend(Protocol):
 
 
 class OllamaBackend:
-    def __init__(self, host: str, timeout: float):
-        self.host, self.timeout = host.rstrip("/"), timeout
+    def __init__(self, host: str, timeout: float, num_ctx: int = 8192):
+        self.host, self.timeout, self.num_ctx = host.rstrip("/"), timeout, num_ctx
 
     def complete(self, system: str, user: str, model: str, max_tokens: int) -> tuple[str, int]:
         r = httpx.post(
@@ -31,7 +31,7 @@ class OllamaBackend:
                 "model": model,
                 "stream": False,
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
-                "options": {"num_predict": max_tokens, "temperature": 0.8},
+                "options": {"num_predict": max_tokens, "temperature": 0.8, "num_ctx": self.num_ctx},
             },
             timeout=self.timeout,
         )
@@ -93,7 +93,7 @@ class LLMRouter:
         def backend_for(provider: str) -> Backend:
             if provider not in built:
                 if provider == "ollama":
-                    built[provider] = OllamaBackend(cfg["ollama"]["host"], cfg["timeout_seconds"])
+                    built[provider] = OllamaBackend(cfg["ollama"]["host"], cfg["timeout_seconds"], cfg["ollama"].get("num_ctx", 8192))
                 elif provider == "anthropic":
                     built[provider] = AnthropicBackend(cfg["timeout_seconds"])
                 else:

@@ -10,6 +10,7 @@ llm:
     host: http://localhost:11434
     fast_model: qwen2.5:3b
     smart_model: qwen2.5:7b      # runs slowly on 4 GB VRAM; swap to qwen2.5:3b if too slow
+    num_ctx: 8192                # Ollama's default window is small and silently cuts long prompts. Lower to 4096 if memory errors.
   anthropic:
     fast_model: claude-haiku-5-5
     smart_model: claude-sonnet-5-5
@@ -32,6 +33,10 @@ quality:
   script_min_single_score: 6.0     # no single criterion below this
   max_script_rounds: 3
   max_concept_regenerations: 2
+  max_character_line_words: 60     # longer speeches fail the hard check
+  max_narrator_line_words: 120
+  dialogue_share_min: 0.2          # share of spoken words by characters (rest is narration)
+  dialogue_share_max: 0.8
 
 discovery:
   subreddits: [todayilearned, WritingPrompts, Futurology, space, history, mildlyinteresting]

@@ -35,6 +35,17 @@ class RunState(BaseModel):
     script_rounds: int = 0
     script_passed: bool = False
 
+    # best draft so far: later rounds can score worse, and we never keep a worse draft
+    best_scenes: list[dict] = Field(default_factory=list)
+    best_notes: list[dict] = Field(default_factory=list)
+    best_scores: dict = Field(default_factory=dict)
+    best_effective: float = -99.0
+    current_is_best: bool = True
+
+    # safety and honesty
+    sensitive: bool = False
+    warnings: list[str] = Field(default_factory=list)
+
     # bookkeeping
     tokens_used: int = 0
     status: str = "created"
@@ -44,6 +55,12 @@ class RunState(BaseModel):
         stamp = time.strftime("%H:%M:%S")
         self.log.append(f"[{stamp}] {msg}")
         print(f"  {msg}")
+
+    def warn(self, msg: str) -> None:
+        """A flag the human must read before using the output."""
+        if msg not in self.warnings:
+            self.warnings.append(msg)
+            print(f"  WARNING: {msg}")
 
     @property
     def dir(self) -> Path:
